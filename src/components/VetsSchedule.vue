@@ -4,19 +4,23 @@
       <input
         type="text"
         placeholder="Search by vet's name"
+        aria-label="Search by vet's name"
         v-model="searchName"
         class="form-control"
       />
-      <div @click="onClickSortDate">
+      <button
+        class="btn btn-primary vets-list-sort-button"
+        @click="onClickSortDate"
+      >
+        Sort Date
         <span v-if="sortType === 'asc-date'">
-          <ArrowUpIcon />
+          <i class="bi bi-arrow-up"></i>
         </span>
         <span v-else>
-          <ArrowDownIcon />
+          <i class="bi bi-arrow-down"></i>
         </span>
-      </div>
+      </button>
     </div>
-    <menu-icon />
     <div class="vets-list-container">
       <ul class="list-group">
         <li
@@ -24,35 +28,36 @@
           v-for="(item, index) in filterByName"
           :key="index"
         >
-          <span class="vets-list-container-date">{{ item.date }}</span>
-          <span class="vets-list-container-time">
-            {{ item.timeStart }} - {{ item.timeFinish }}
-          </span>
-          <span>{{ item.name }}</span>
+          <div class="vets-list-container-card">
+            <div class="d-flex align-items-center">
+              <img :src="randomImage(item.id)" />
+              <div class="vets-list-container-card-body">
+                <b><i class="bi bi-calendar-event"></i> {{ item.date }}</b>
+                <b
+                  ><i class="bi bi-clock"></i> {{ item.timeStart }} -
+                  {{ item.timeFinish }}
+                </b>
+                <span>Dr {{ item.name }}</span>
+              </div>
+            </div>
+            <div v-if="item.selected">
+              <i class="bi bi-check2-circle"></i>
+            </div>
+            <div class="cursor-pointer" @click="selectVet(item)" v-else>
+              <i class="bi bi-chevron-right"></i>
+            </div>
+          </div>
         </li>
       </ul>
-      <!--  <ul>
-        <li v-for="(item, index) in filterByName" :key="index">
-          <CalendarIcon />
-          <span class="vets-list-container-date">{{ item.date }}</span>
-          <span class="vets-list-container-time">
-            {{ item.timeStart }} - {{ item.timeFinish }}
-          </span>
-          <span>{{ item.name }}</span>
-        </li>
-      </ul> -->
     </div>
   </div>
 </template>
 <script>
 import axios from "axios";
-import ArrowDownIcon from "vue-material-design-icons/ArrowDown.vue";
-import ArrowUpIcon from "vue-material-design-icons/ArrowUp.vue";
 import moment from "moment";
 
 export default {
   name: "VetsSchedule",
-  components: { ArrowDownIcon, ArrowUpIcon },
   data() {
     return {
       schedule: null,
@@ -63,7 +68,7 @@ export default {
   computed: {
     filterByName() {
       return this.schedule?.filter((item) => {
-        return item.name.toLowerCase().includes(this.searchName);
+        return item.name.toLowerCase().includes(this.searchName.toLowerCase());
       });
     },
   },
@@ -89,38 +94,59 @@ export default {
         }
       });
     },
+    randomImage(id) {
+      return `https://xsgames.co/randomusers/assets/avatars/${
+        id === 4714 ? "female" : "male"
+      }/${id.toString().slice(0, -3)}6.jpg`;
+    },
+    selectVet(vet) {
+      vet.selected = true;
+    },
   },
 };
 </script>
-<style>
+<style lang="scss" scoped>
 .vets-list {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.vets-list-filters {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-/* input {
-            margin-right: 6px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+  &-filters {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 30rem;
+    input {
+      margin-right: 6px;
+    }
+  }
+  &-sort-button {
+    display: flex;
+    align-items: center;
+  }
+  &-container {
+    width: 30rem;
+    display: flex;
+    justify-content: center;
+    &-card {
+      display: flex;
+      align-items: center;
+      img {
+        width: 20%;
+        height: 20%;
+        border-radius: 15px;
+      }
+      &-body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+        span {
+          color: rgba(113, 128, 150, 1);
+          font-size: 0.875rem;
         }
-        button {
-            color: white;
-            background-color: #0054DD;
-            cursor: pointer;
-            border-radius: 4px;
-            padding: 10px 20px;
-        } */
-
-.vets-list-container {
-  width: 30rem;
-  display: flex;
-  justify-content: center;
+      }
+    }
+  }
 }
 </style>

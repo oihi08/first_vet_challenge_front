@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import './assets/global.scss';
 
-const app = createApp(App).mount('#app');
-app.use(require('vue-moment'))
+createApp(App).mount('#app');
