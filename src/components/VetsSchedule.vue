@@ -87,8 +87,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 10px;
   &-container {
-    width: 30rem;
     display: flex;
     justify-content: center;
   }

@@ -49,7 +49,10 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
-  width: 30rem;
+  width: 450px;
+  @media only screen and (max-width: 600px) {
+    width: 100%;
+  }
   input {
     margin-right: 6px;
   }
