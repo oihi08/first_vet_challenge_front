@@ -1,6 +1,7 @@
 # FirstVet challenge (front)
 
 This is the frontend code of FirstVet's technical challenge, written in Vue.
+
 Visit https://firstvetfrontend.web.app to see it in live 🚀
 
 ## Table of Contents
