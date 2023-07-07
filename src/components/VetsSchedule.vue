@@ -73,10 +73,11 @@ export default {
     },
   },
   created: function () {
-    axios.get("http://127.0.0.1:8000/schedule").then((res) => {
-      console.log("res", res.data);
-      this.schedule = this.onSortByDate(res.data, "asc-date");
-    });
+    axios
+      .get(`${process.env.VUE_APP_BACKEND_URL_KEY}api/schedule`)
+      .then((res) => {
+        this.schedule = this.onSortByDate(res.data, "asc-date");
+      });
   },
   methods: {
     onClickSortDate() {
@@ -84,7 +85,7 @@ export default {
       this.schedule = this.onSortByDate(this.schedule, this.sortType);
     },
     onSortByDate(list, newSortType) {
-      return list.sort((a, b) => {
+      return list?.sort((a, b) => {
         const dateA = moment(a.date + a.timeStart, "YYYY-MM-DD HH:mm");
         const dateB = moment(b.date + b.timeStart, "YYYY-MM-DD HH:mm");
         if (newSortType === "asc-date") {
