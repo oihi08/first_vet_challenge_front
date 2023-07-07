@@ -1,26 +1,10 @@
 <template>
   <div class="vetsList">
-    <div class="vetsList-filters">
-      <input
-        type="text"
-        placeholder="Search by vet's name"
-        aria-label="Search by vet's name"
-        v-model="searchName"
-        class="form-control"
-      />
-      <button
-        class="btn btn-primary vetsList-sort-button"
-        @click="onClickSortDate"
-      >
-        Sort Date
-        <span v-if="sortType === 'asc-date'">
-          <i class="bi bi-arrow-up"></i>
-        </span>
-        <span v-else>
-          <i class="bi bi-arrow-down"></i>
-        </span>
-      </button>
-    </div>
+    <VetsFilters
+      :sortType="sortType"
+      v-model:searchName="searchName"
+      @onClickSortDate="onClickSortDate"
+    />
     <div class="vetsList-container">
       <ul class="list-group">
         <li
@@ -28,25 +12,7 @@
           v-for="(item, index) in filterByName"
           :key="index"
         >
-          <div class="vetsList-container-card">
-            <div class="d-flex align-items-center">
-              <img :src="randomImage(item.id)" />
-              <div class="vetsList-container-card-body">
-                <b><i class="bi bi-calendar-event"></i> {{ item.date }}</b>
-                <b
-                  ><i class="bi bi-clock"></i> {{ item.timeStart }} -
-                  {{ item.timeFinish }}
-                </b>
-                <span>Dr {{ item.name }}</span>
-              </div>
-            </div>
-            <div v-if="item.selected">
-              <i class="bi bi-check2-circle"></i>
-            </div>
-            <div class="cursor-pointer" @click="selectVet(item)" v-else>
-              <i class="bi bi-chevron-right"></i>
-            </div>
-          </div>
+          <VetsCard :vet="item" @selectVet="selectVet" />
         </li>
       </ul>
     </div>
@@ -55,9 +21,15 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import VetsCard from "./VetsCard.vue";
+import VetsFilters from "./VetsFilters.vue";
 
 export default {
   name: "VetsSchedule",
+  components: {
+    VetsCard,
+    VetsFilters,
+  },
   data() {
     return {
       schedule: null,
@@ -83,7 +55,7 @@ export default {
       });
   },
   methods: {
-    onClickSortDate: () => {
+    onClickSortDate() {
       this.sortType = this.sortType === "asc-date" ? "desc-date" : "asc-date";
       this.schedule = this.onSortByDate(this.schedule, this.sortType);
     },
@@ -115,42 +87,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  &-filters {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    width: 30rem;
-    input {
-      margin-right: 6px;
-    }
-  }
-  &-sort-button {
-    display: flex;
-    align-items: center;
-  }
   &-container {
     width: 30rem;
     display: flex;
     justify-content: center;
-    &-card {
-      display: flex;
-      align-items: center;
-      img {
-        width: 20%;
-        height: 20%;
-        border-radius: 15px;
-      }
-      &-body {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem;
-        span {
-          color: rgba(113, 128, 150, 1);
-          font-size: 0.875rem;
-        }
-      }
-    }
   }
 }
 </style>
