@@ -1,6 +1,6 @@
 <template>
-  <div class="vets-list">
-    <div class="vets-list-filters">
+  <div class="vetsList">
+    <div class="vetsList-filters">
       <input
         type="text"
         placeholder="Search by vet's name"
@@ -9,7 +9,7 @@
         class="form-control"
       />
       <button
-        class="btn btn-primary vets-list-sort-button"
+        class="btn btn-primary vetsList-sort-button"
         @click="onClickSortDate"
       >
         Sort Date
@@ -21,17 +21,17 @@
         </span>
       </button>
     </div>
-    <div class="vets-list-container">
+    <div class="vetsList-container">
       <ul class="list-group">
         <li
           class="list-group-item"
           v-for="(item, index) in filterByName"
           :key="index"
         >
-          <div class="vets-list-container-card">
+          <div class="vetsList-container-card">
             <div class="d-flex align-items-center">
               <img :src="randomImage(item.id)" />
-              <div class="vets-list-container-card-body">
+              <div class="vetsList-container-card-body">
                 <b><i class="bi bi-calendar-event"></i> {{ item.date }}</b>
                 <b
                   ><i class="bi bi-clock"></i> {{ item.timeStart }} -
@@ -66,7 +66,7 @@ export default {
     };
   },
   computed: {
-    filterByName() {
+    filterByName: function () {
       return this.schedule?.filter((item) => {
         return item.name.toLowerCase().includes(this.searchName.toLowerCase());
       });
@@ -77,14 +77,17 @@ export default {
       .get(`${process.env.VUE_APP_BACKEND_URL_KEY}api/schedule`)
       .then((res) => {
         this.schedule = this.onSortByDate(res.data, "asc-date");
+      })
+      .catch((error) => {
+        console.error("Error fetching schedule:", error);
       });
   },
   methods: {
-    onClickSortDate() {
+    onClickSortDate: () => {
       this.sortType = this.sortType === "asc-date" ? "desc-date" : "asc-date";
       this.schedule = this.onSortByDate(this.schedule, this.sortType);
     },
-    onSortByDate(list, newSortType) {
+    onSortByDate: (list, newSortType) => {
       return list?.sort((a, b) => {
         const dateA = moment(a.date + a.timeStart, "YYYY-MM-DD HH:mm");
         const dateB = moment(b.date + b.timeStart, "YYYY-MM-DD HH:mm");
@@ -95,19 +98,19 @@ export default {
         }
       });
     },
-    randomImage(id) {
+    randomImage: (id) => {
       return `https://xsgames.co/randomusers/assets/avatars/${
         id === 4714 ? "female" : "male"
-      }/${id.toString().slice(0, -3)}6.jpg`;
+      }/46.jpg`;
     },
-    selectVet(vet) {
+    selectVet: (vet) => {
       vet.selected = true;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.vets-list {
+.vetsList {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
